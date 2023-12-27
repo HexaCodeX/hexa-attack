@@ -9,7 +9,7 @@ from src.constants.icons import icons
 def random_ip ():
     return socket.inet_ntoa(struct.pack('>I', random.randint(1, 0xffffffff)))
 
-def xhr (method, url, headers = None, data = None, proxies=None, json=None, files=None, timeout=3):
+def xhr (method, url, headers = None, data = None, proxies=None, json=None, files=None, timeout=3, mode="log"):
     func = getattr(requests, method)
     meta_URL = urlparse(url)
     response = None
@@ -17,11 +17,15 @@ def xhr (method, url, headers = None, data = None, proxies=None, json=None, file
     try:
         response = func(url, headers=headers, data=data, proxies=proxies, json=json, files=files, timeout=timeout)
         http_proxy = proxies["http"] if proxies else "-"
-        log("success", response.text)
         
-        return f"| { chalk.green(status_codes._codes[response.status_code][0]) } | [{ chalk.yellow(method.upper()) }] [{purple}{ response.status_code }{white}] | { chalk.cyan(meta_URL.hostname) } | { chalk.white(http_proxy) }"
+        if mode == "log":
+            return f"| { chalk.green(status_codes._codes[response.status_code][0]) } | [{ chalk.yellow(method.upper()) }] [{purple}{ response.status_code }{white}] | { chalk.cyan(meta_URL.hostname) } | { chalk.white(http_proxy) }"
+        if mode == "return":
+            return response
         
     except Exception as err:
+        if mode == "return":
+            return False
         log("error", f"| { chalk.green(str(err)) } | [{ chalk.yellow(method.upper()) }] | { meta_URL.hostname } |")
 
 def json_decode(pathfile):
@@ -119,7 +123,7 @@ def get_proxies (path):
         return content.split("\n")
     else:
         raise Exception (f"path '{ path }' doesn't exists !")
-        
+
 def random_str (length = 8):
     characters = string.ascii_letters + string.digits  # You can customize this based on your requirements
     random_string = ''.join(random.choice(characters) for _ in range(length))

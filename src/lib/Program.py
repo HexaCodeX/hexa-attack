@@ -1,5 +1,6 @@
 import os, time
 from .Thread import Thread
+from .Network import Network
 from src.constants.layouts import barrier, banner, menu
 from src.constants.options import options
 from src.utils.io import question, confirm, log
@@ -12,6 +13,7 @@ class Program:
     @staticmethod
     def mainTask():
         os.system("clear")
+        
         print (banner)
         print (barrier)
         print (menu)
@@ -29,13 +31,19 @@ class Program:
         if choice in ["exit"]:
             Program.exit()
         if option in ["test_proxies"]:
-            Thread.test_proxies()
+            Network.test_proxies()
+        if option in ["ip_reverse"]:
+            Network.ip_reverse()
+        if option in ["update_proxies"]:
+            Network.update_proxies()
         if option in ["ddos_all_requests"]:
             Thread.all_requests()
         if option in ["ddos_basic"]:
             Thread.basic()
+        if option in ["spam_post"]:
+            Thread.spam_post()
         
-        Program.soon()
+        Program.start()
     @staticmethod
     def start():
         try:

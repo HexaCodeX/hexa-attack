@@ -1,9 +1,11 @@
 
 lists = [
   "test proxies",
+  "update proxies",
   "ddos all requests",
   "ddos basic",
   "dns record",
+  "spam post",
   "admin finder",
   "scraping",
   "bruteforce website",
