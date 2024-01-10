@@ -1,4 +1,4 @@
-version: 1.0.0
+version: 1.1.0
 changelog:
 1. DDOS basic (active)
 2. DDOS ALL REQUEST (active)

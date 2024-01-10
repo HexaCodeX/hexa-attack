@@ -71,7 +71,7 @@ class Thread:
             except Exception as err:
                 log("error", str(err))
                 
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=50) as executor:
             executor.map(func, range(0, int(total)))
         
         
@@ -89,15 +89,16 @@ class Thread:
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
         
         def func (iteration):
-            methods = ["post"]
+            methods = ["post", "get"]
             
             try:
                 proxy = {
                   "http": random.choice(proxies)
                 }
                 data = {
-                  "user_": f"{ random_str(100) }@gmail.com",
-                  "pass_": random_str(1000*10),
+                  "email": f"{ random_str(100) }@gmail.com",
+                  "pass": random_str(10),
+                  "pass": random_str(10),
                   #"playid": random_id(9),
                   #"nick": random_str(9),
                   #"epass": "pernah",
@@ -108,7 +109,10 @@ class Thread:
                   "ip": random_ip(),
                 }
                 for method in methods:
-                    output = xhr(method, url, proxies=proxy, data=data)
+                    output = xhr(method, url, proxies=proxy, params={
+                      "id": random_id(10*100),
+                      "start": random_id(10*100),
+                    }, data=data)
                     stop = perf_counter()
                     
                     if output:

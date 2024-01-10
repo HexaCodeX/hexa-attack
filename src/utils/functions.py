@@ -5,17 +5,21 @@ from urllib.parse import urlparse
 from src.utils.io import log
 from src.utils.colors import purple, white
 from src.constants.icons import icons
+from src.constants.paths import PATH_PROGRAM
 
 def random_ip ():
     return socket.inet_ntoa(struct.pack('>I', random.randint(1, 0xffffffff)))
 
-def xhr (method, url, headers = None, data = None, proxies=None, json=None, files=None, timeout=3, mode="log"):
+def xhr (method, url, headers = {}, data = None, proxies=None, params=None,json=None, files=None, timeout=3, mode="log"):
     func = getattr(requests, method)
     meta_URL = urlparse(url)
     response = None
-    
+    headers = {
+      **headers,
+      "user-agent": random_user_agent(),
+    }
     try:
-        response = func(url, headers=headers, data=data, proxies=proxies, json=json, files=files, timeout=timeout)
+        response = func(url, headers=headers, data=data, params=params, proxies=proxies, json=json, files=files, timeout=timeout)
         http_proxy = proxies["http"] if proxies else "-"
         
         if mode == "log":
@@ -107,8 +111,15 @@ def loop (char, each):
     return result
 
 def checkValidUrl (url):
-    exp = r"^https?://[^\s\/$.?#].[^\s]*$"
-    if not re.match(exp, url):
+    url_pattern = re.compile(
+      r'^(https?://)?'  # Match http or https
+      r'((\d{1,3}\.){3}\d{1,3}|'  # IP address or
+      r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})'  # domain
+      r'(:\d{1,5})?'  # Optional port
+      r'(/[^\s]*)?$'  # Optional path
+    )
+    
+    if not re.match(url_pattern, url):
         log("warning", "please enter a valid url !")
         return False
     else:
@@ -145,3 +156,15 @@ def random_user_agent ():
 
     user_agent = f'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) {random_browser}/{browser_version} Safari/537.3'
     return user_agent
+
+def get_admin_pathnames ():
+    path = f"{ PATH_PROGRAM }/src/includes/admin_pathnames.txt"
+    if os.path.exists(path):
+        content = ""
+        with open(path, "r") as file:
+            content = file.read()
+            file.close()
+        return content.split("\n")
+    else:
+        raise Exception (f"path '{ path }' doesn't exists !")
+

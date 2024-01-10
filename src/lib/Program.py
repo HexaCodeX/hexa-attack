@@ -1,7 +1,7 @@
 import os, time
 from .Thread import Thread
 from .Network import Network
-from src.constants.layouts import barrier, banner, menu
+from src.constants.layouts import barrier, banner, menu, changeBanner
 from src.constants.options import options
 from src.utils.io import question, confirm, log
 from src.utils.functions import checkValidUrl
@@ -13,7 +13,6 @@ class Program:
     @staticmethod
     def mainTask():
         os.system("clear")
-        
         print (banner)
         print (barrier)
         print (menu)
@@ -26,9 +25,10 @@ class Program:
             time.sleep(1)
             Program.start()
         
-        option = options[choice].replace(" ", "_")
+        option = options[choice].replace(" ", "_").strip()
         
-        if choice in ["exit"]:
+        time.sleep(2)
+        if option in ["exit"]:
             Program.exit()
         if option in ["test_proxies"]:
             Network.test_proxies()
@@ -36,6 +36,8 @@ class Program:
             Network.ip_reverse()
         if option in ["update_proxies"]:
             Network.update_proxies()
+        if option in ["admin_finder"]:
+            Network.admin_finder()
         if option in ["ddos_all_requests"]:
             Thread.all_requests()
         if option in ["ddos_basic"]:
@@ -50,7 +52,7 @@ class Program:
             Program.mainTask()
         except Exception as err:
             log("error", str(err))
-            time.sleep(1)
+            time.sleep(0.5 * len(str(err)))
             Program.start()
     
     @staticmethod

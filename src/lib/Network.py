@@ -1,7 +1,8 @@
 import requests, random, chalk, os, asyncio, math, urllib, socket, time
+from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter
-from src.utils.functions import xhr, checkValidUrl, get_proxies, random_str, random_id, random_ip, random_user_agent
+from src.utils.functions import xhr, checkValidUrl, get_proxies, get_admin_pathnames, random_str, random_id, random_ip, random_user_agent
 from src.utils.io import log, question, confirm
 from src.constants.paths import PATH_PROGRAM
 
@@ -10,13 +11,14 @@ class Network:
     def ip_reverse ():
         url = question ("input target url")
         if not checkValidUrl(url):
-            Thread.basic()
-        urlParsed = urllib.parse.urlparse.urlparse(url)
+            Network.ip_reverse()
+        
+        urlParsed = urllib.parse.urlparse(url)
         hostname = urlParsed.hostname
         ipAddress = socket.gethostbyname(hostname)
         
-        ipAddressUrl = parsed._replace(netloc=ipaddress).geturl()
-        log("success", f"{ url } => { ipAddressUrl }")
+        ipAddressUrl = urlParsed._replace(netloc=ipAddress).geturl()
+        log("success", f"{ chalk.yellow(url) } => { chalk.cyan(ipAddressUrl) }")
         
         if confirm ("want try again ?"):
             Network.ip_reverse()
@@ -74,6 +76,45 @@ class Network:
                 
         with ThreadPoolExecutor(max_workers=10) as executor:
             executor.map(func, proxies)
+        
+        with open(f"{ PATH_PROGRAM }/proxies.txt", "w") as file:
+            content = "\n".join(proxies)
+            file.write(content)
+            file.close()
+        stop = perf_counter()
+        log("info", f"time taken { stop - start }")
+    
+    @staticmethod
+    def admin_finder ():
+        start = perf_counter()
+        proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
+        target = question ("test target url")
+        pathnames = get_admin_pathnames()
+        
+        def func (pathname):
+            methods = ["get"]
+            
+            try:
+                proxy = {
+                  "http": random.choice(proxies)
+                }
+                url = urljoin(target, pathname)
+                for method in methods:
+                    response = xhr(method, url, proxies=proxy, mode="return")
+                    
+                    if not response:
+                       log("error", f"| failed | [{ chalk.red('???') }] | { pathname }")
+                    else:
+                        if response.status_code in range(200, 499):
+                            log("info", f"| found | [{ chalk.green(response.status_code) }] | { pathname }")
+                        else:
+                            log("info", f"| failed | [{ chalk.red(response.status_code) }] | { pathname }")
+                      
+            except Exception as err:
+                log("error", str(err))
+       
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            executor.map(func, pathnames)
         
         with open(f"{ PATH_PROGRAM }/proxies.txt", "w") as file:
             content = "\n".join(proxies)
