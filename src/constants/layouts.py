@@ -2,7 +2,7 @@ import chalk, math, os
 from src.constants.config import config
 from src.constants.options import options
 from src.utils.functions import loop
-from src.utils.colors import blue, white, green, yellow
+from src.utils.colors import blue, white, green, yellow, gray
 
 total_options = len(options) - 1
 
@@ -60,7 +60,8 @@ barrier = loop(f"{yellow}={white}", 50)
 
 def changeBanner (menu = "-"):
     os.system("clear")
-    banner = f"""{ green }
+    banner = f"""{ barrier }
+{ green }
 _  _ ____ _  _ ____   ____ ___ ___ ____ ____ _  _ 
 |__| |___  \/  |__|   |__|  |   |  |__| |    |_/  
 |  | |___ _/\_ |  |   |  |  |   |  |  | |___ | \_ 
@@ -70,7 +71,11 @@ Author          : { blue } { config.author } { white }
 Github          : { blue } github.com/{ config.author } { white }
 Repository      : { blue } github.com/{ config.author }/{ config.name } { white }
 Version         : { blue } { config.version } { white }
-Menu            : { blue } { menu } { white }"""
-    print (barrier)
+Active Menu     : { blue } { menu } { white }
+
+{ barrier }
+
+{ gray }[ctrl + c + enter] to back home { white }
+{ gray }[ctrl + z] to force close { white }
+"""
     print (banner)
-    print (barrier)

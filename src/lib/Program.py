@@ -27,37 +27,54 @@ class Program:
         
         option = options[choice].replace(" ", "_").strip()
         
-        time.sleep(2)
-        if option in ["exit"]:
-            Program.exit()
-        if option in ["test_proxies"]:
-            Network.test_proxies()
-        if option in ["ip_reverse"]:
-            Network.ip_reverse()
-        if option in ["update_proxies"]:
-            Network.update_proxies()
-        if option in ["admin_finder"]:
-            Network.admin_finder()
-        if option in ["ddos_all_requests"]:
-            Thread.all_requests()
-        if option in ["ddos_basic"]:
-            Thread.basic()
-        if option in ["spam_post"]:
-            Thread.spam_post()
+        changeBanner(options[choice])
+        
+        try:
+            if option in ["exit"]:
+                Program.exit()
+            if option in ["test_proxies"]:
+                Network.test_proxies()
+            if option in ["ip_reverse"]:
+                Network.ip_reverse()
+            if option in ["update_proxies"]:
+                Network.update_proxies()
+            if option in ["admin_finder"]:
+                Network.admin_finder()
+            if option in ["dns_record"]:
+                Network.dns_record()
+            if option in ["ddos_all_requests"]:
+                Thread.all_requests()
+            if option in ["ddos_basic"]:
+                Thread.basic()
+            if option in ["spam_post"]:
+                Thread.spam_post()
+            if option in ["smtp_killer"]:
+                Thread.smtp_killer()
+        except Exception as err:
+            raise err
+        except KeyboardInterrupt as err:
+            if (confirm("back to menu")):
+                Program.start()
+            else:
+                Program.exit()
         
         Program.start()
     @staticmethod
     def start():
+        Program.mainTask()
         try:
-            Program.mainTask()
+            pass
+        except KeyboardInterrupt as err:
+            Program.exit()
         except Exception as err:
             log("error", str(err))
-            time.sleep(0.5 * len(str(err)))
+            time.sleep(2)
+            time.sleep(0.01 * len(str(err)))
             Program.start()
     
     @staticmethod
     def exit():
-        if confirm ("are you sure ?"):
+        if confirm ("are you sure to exit program ?"):
             log("info", "sayonara")
             exit()
         else:

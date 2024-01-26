@@ -1,10 +1,11 @@
-import requests, random, chalk, os, asyncio, math, urllib, socket, time
+import requests, random, chalk, os, math, urllib, socket, time
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter
 from src.utils.functions import xhr, checkValidUrl, get_proxies, get_admin_pathnames, random_str, random_id, random_ip, random_user_agent
 from src.utils.io import log, question, confirm
 from src.constants.paths import PATH_PROGRAM
+from src.constants.config import config
 
 class Network:
     @staticmethod
@@ -48,6 +49,9 @@ class Network:
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
         url = question ("test target url") #f"https://google.com/"
         
+        if not checkValidUrl(url):
+            Network.test_proxies()
+        
         log("info", f"total proxies ({ chalk.cyan(len(proxies)) })")
         time.sleep(1)
         
@@ -74,7 +78,7 @@ class Network:
             except Exception as err:
                 log("error", str(err))
                 
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=config.workers) as executor:
             executor.map(func, proxies)
         
         with open(f"{ PATH_PROGRAM }/proxies.txt", "w") as file:
@@ -88,8 +92,11 @@ class Network:
     def admin_finder ():
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
-        target = question ("test target url")
+        target = question ("target url")
         pathnames = get_admin_pathnames()
+        
+        if not checkValidUrl(target):
+            Network.admin_finder()
         
         def func (pathname):
             methods = ["get"]
@@ -109,17 +116,30 @@ class Network:
                             log("info", f"| found | [{ chalk.green(response.status_code) }] | { pathname }")
                         else:
                             log("info", f"| failed | [{ chalk.red(response.status_code) }] | { pathname }")
-                      
+                            
             except Exception as err:
                 log("error", str(err))
        
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=config.workers) as executor:
             executor.map(func, pathnames)
         
         with open(f"{ PATH_PROGRAM }/proxies.txt", "w") as file:
             content = "\n".join(proxies)
             file.write(content)
             file.close()
+            
         stop = perf_counter()
         log("info", f"time taken { stop - start }")
     
+    @staticmethod
+    def dns_record ():
+        try:
+            os.system("nmap")
+            
+            if confirm ("want try again ?"):
+                Network.dns_record()
+            else:
+                return False
+        except Exception as err:
+            log("error", "you need install nmap first !")
+            exit()

@@ -5,7 +5,7 @@
 ![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/HexaCodeX/hexa-attack)
 
 # Hexa Attack
-a tool for carrying out DDOS and also provides several additional features that are useful for identifying a website
+a open source tool for carrying out DDOS and also provides several additional features that are useful for identifying a website
 
 ## installation
 ```shell

@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+apt install nmap -y;
+pip install -r requirements.txt;

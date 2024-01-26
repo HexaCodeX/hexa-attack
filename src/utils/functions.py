@@ -1,7 +1,7 @@
 import json, re, os, chalk, requests, random, string, socket, struct
 from requests import status_codes
 from datetime import datetime
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from src.utils.io import log
 from src.utils.colors import purple, white
 from src.constants.icons import icons
@@ -58,9 +58,6 @@ def text_split(text):
     pattern = r"(\,|\|)"
     items = list( filter(lambda item: re.match(pattern, item) == None, list(map(lambda item: str(item).strip(), re.split(pattern, text)))) )
     return items
-
-def url_join (domain, username):
-    return f"https://{ domain }/{ username }"
 
 def get_class_attribute (C, method):
     name = C.__name__
@@ -168,3 +165,7 @@ def get_admin_pathnames ():
     else:
         raise Exception (f"path '{ path }' doesn't exists !")
 
+def url_port_join (url, port = 443):
+    parsed = urlparse(url)
+    
+    return url.replace(f"{ parsed.scheme }://{ parsed.netloc }", f"{ parsed.scheme }://{ parsed.netloc }:{ port }")

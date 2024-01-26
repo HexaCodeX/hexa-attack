@@ -3,6 +3,16 @@ from src.constants.paths import PATH_PROGRAM
 
 class File:
     @staticmethod
+    def read (pathfile):
+        try:
+            content = ""
+            with open(pathfile, "r") as file:
+                content = file.read()
+                file.close()
+            return content
+        except Exception as err:
+            raise (f"file at { pathfile } is doesn't exist !")
+    @staticmethod
     def save (content, dest):
         dest = os.path.join(PATH_PROGRAM, dest)
         directory = os.path.dirname(dest)

@@ -7,11 +7,11 @@ lists = [
   "dns record",
   "spam post",
   "admin finder",
-  "scraping",
+  "clone website",
   "bruteforce website",
   "ip reverse",
-  "ip tracker",
   "stack scanner",
+  "smtp killer",
 ]
 lists = sorted(lists)
 lists.insert(0, "exit")
