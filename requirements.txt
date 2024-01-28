@@ -2,3 +2,4 @@ requests-futures
 requests
 pychalk
 asyncio
+python-nmap

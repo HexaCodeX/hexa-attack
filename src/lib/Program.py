@@ -40,7 +40,9 @@ class Program:
                 Network.update_proxies()
             if option in ["admin_finder"]:
                 Network.admin_finder()
-            if option in ["dns_record"]:
+            if option in ["port_scanner"]:
+                Network.port_scanner()
+            if option in ["dns-record"]:
                 Network.dns_record()
             if option in ["ddos_all_requests"]:
                 Thread.all_requests()

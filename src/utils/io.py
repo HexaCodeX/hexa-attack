@@ -3,8 +3,14 @@ from src.constants.config import config
 from src.constants.icons import icons
 from src.utils.colors import gray, white, green, purple
 
-def question (text):
+def question (text, transform = str):
     _input_ = input(f"[{ green }?{ white }]: {text}: ")
+    
+    try:
+        _input_ = transform(_input_)
+    except Exception:
+        log("error", f"input must reference with { type(transform) }")
+        return question(text, transform=transform)
     
     if _input_ == "":
         return question(text)

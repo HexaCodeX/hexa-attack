@@ -1,4 +1,4 @@
-import requests, random, chalk, os, math, urllib, socket, time
+import requests, random, chalk, math, urllib, socket, time
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter
@@ -119,7 +119,7 @@ class Network:
                             
             except Exception as err:
                 log("error", str(err))
-       
+        
         with ThreadPoolExecutor(max_workers=config.workers) as executor:
             executor.map(func, pathnames)
         
@@ -132,14 +132,41 @@ class Network:
         log("info", f"time taken { stop - start }")
     
     @staticmethod
-    def dns_record ():
+    def port_scanner ():
+        url = question("target host")
+        if not checkValidUrl(url):
+            Network.port_scanner()
+        
+        start_port = question("start port", transform=int)
+        end_port = question("end port", transform=int)
+        
+        
         try:
-            os.system("nmap")
+            def scan_port (port):
+                urlParsed = urllib.parse.urlparse(url)
+                hostname = urlParsed.hostname
+                ipAddressUrl = socket.gethostbyname(hostname)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                
+                conn = sock.connect_ex(( ipAddressUrl, port ))
+                try:
+                    service_name = socket.getservbyport(port)
+                    
+                    log("info", f"{ service_name } | { port } | { 'open' if not conn else 'closed' }")
+                except Exception:
+                    pass
+                    # log("error", f"error while connecting to port { port }")  
+            
+            with ThreadPoolExecutor(max_workers=config.workers) as executor:
+                executor.map(scan_port, range(start_port, end_port + 1))
             
             if confirm ("want try again ?"):
-                Network.dns_record()
+                Network.port_scanner()
             else:
                 return False
         except Exception as err:
-            log("error", "you need install nmap first !")
-            exit()
+            log("error", str(err))
+
+    @staticmethod
+    def dns_record ():
+        pass

@@ -10,7 +10,7 @@ lists = [
   "clone website",
   "bruteforce website",
   "ip reverse",
-  "stack scanner",
+  "port scanner",
   "smtp killer",
 ]
 lists = sorted(lists)

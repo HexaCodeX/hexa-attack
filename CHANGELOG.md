@@ -16,4 +16,9 @@ version: 1.2.5
 changelog:
 1. Add port in every request for intensive layer
 2. SMTP KILLER (active)
-2. DNS RECORD (active)
+2. DNS RECORD (inactive)
+
+version: 1.5.0
+changelog:
+1. PORT SCANNER (active)
+2. DNS RECORD (soon)
