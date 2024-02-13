@@ -1,15 +1,16 @@
 import requests, random, chalk, math, urllib, socket, time
 from urllib.parse import urljoin
+from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter
-from src.utils.functions import xhr, checkValidUrl, get_proxies, get_admin_pathnames, random_str, random_id, random_ip, random_user_agent
+from src.utils.functions import loop, xhr, checkValidUrl, get_proxies, get_admin_pathnames, random_str, random_id, random_ip, random_user_agent, get_element_from_selector, check_list_index, test_ping
 from src.utils.io import log, question, confirm
 from src.constants.paths import PATH_PROGRAM
 from src.constants.config import config
 
 class Network:
     @staticmethod
-    def ip_reverse ():
+    def ip_reverse () -> None:
         url = question ("input target url")
         if not checkValidUrl(url):
             Network.ip_reverse()
@@ -27,7 +28,7 @@ class Network:
             return False
     
     @staticmethod
-    def update_proxies ():
+    def update_proxies () -> None:
         url = "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
         start = perf_counter()
         
@@ -44,7 +45,7 @@ class Network:
         time.sleep(2)
     
     @staticmethod
-    def test_proxies ():
+    def test_proxies () -> None:
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
         url = question ("test target url") #f"https://google.com/"
@@ -89,7 +90,7 @@ class Network:
         log("info", f"time taken { stop - start }")
     
     @staticmethod
-    def admin_finder ():
+    def admin_finder () -> None:
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
         target = question ("target url")
@@ -132,14 +133,13 @@ class Network:
         log("info", f"time taken { stop - start }")
     
     @staticmethod
-    def port_scanner ():
+    def port_scanner () -> None:
         url = question("target host")
         if not checkValidUrl(url):
             Network.port_scanner()
         
         start_port = question("start port", transform=int)
         end_port = question("end port", transform=int)
-        
         
         try:
             def scan_port (port):
@@ -168,5 +168,52 @@ class Network:
             log("error", str(err))
 
     @staticmethod
-    def dns_record ():
-        pass
+    def who_is () -> None:
+        domain = question("input target domain")
+        isUseSSL = confirm("use SSL (https)")
+        targetUrl = f"http{ 's' if isUseSSL else '' }://{ domain }"
+        whoIsUrl = f"https://who.is/whois/{ domain }"
+        
+        if test_ping (targetUrl) and checkValidUrl(targetUrl):
+            html = xhr("get", whoIsUrl, mode="return").text
+            element = BeautifulSoup(html, "html.parser")
+            
+            domainStatus = element.find(id="siteStatusStatus").get_text() 
+            queryResponseHeaders = element.find_all(class_="queryResponseHeader")
+            queryResponseBodies = element.find_all(class_="queryResponseBodyRow")
+            
+            data = {}
+            i = 0
+            
+            for responseBody in queryResponseBodies:
+                if not check_list_index(i, queryResponseBodies):
+                    continue
+                
+                key = responseBody.find(class_="queryResponseBodyKey").get_text() if responseBody.find(class_="queryResponseBodyKey") else responseBody.find_parent(class_="row").find_previous(class_="row").get_text()
+                values = responseBody.find_all(class_="queryResponseBodyValue")
+                
+                if len(values) > 1:
+                    data[key] = []
+                    
+                    for value in values:
+                        data[key].append(value.get_text())
+                else:
+                    data[key] = values[0].get_text()
+                i += 1
+            output = ""
+            
+            for key in data:
+                item = data[key]
+                
+                output += key
+                
+                if type(item) == list:
+                    for x in item:
+                        output += x + "\n"
+                else:
+                    output += item
+            output = "\n".join(map(lambda line: f"[{ chalk.blue('@') }]: { line }", output.split("\n")))
+            print (output)
+        else:
+            Network.who_is()
+    

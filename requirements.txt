@@ -3,3 +3,4 @@ requests
 pychalk
 asyncio
 python-nmap
+bs4

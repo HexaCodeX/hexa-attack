@@ -22,3 +22,15 @@ version: 1.5.0
 changelog:
 1. PORT SCANNER (active)
 2. DNS RECORD (soon)
+3. 
+
+version: 1.6.0
+changelog:
+1. SPAM POST (update) [improvement]
+2. DataType typing union
+
+version: 1.7.0
+changelog:
+1. WHOIS (active)
+2. DNS RECORD (inactive)
+3. BRUTEFORCE WEBSITE (active)

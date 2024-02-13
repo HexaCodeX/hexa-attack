@@ -4,7 +4,7 @@ lists = [
   "update proxies",
   "ddos all requests",
   "ddos basic",
-  "dns record",
+  "who is",
   "spam post",
   "admin finder",
   "clone website",

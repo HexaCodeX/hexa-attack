@@ -3,15 +3,15 @@ from .Thread import Thread
 from .Network import Network
 from src.constants.layouts import barrier, banner, menu, changeBanner
 from src.constants.options import options
+from src.constants.config import dict_config
 from src.utils.io import question, confirm, log
-from src.utils.functions import checkValidUrl
-
+from src.utils.functions import checkValidUrl, json_encode
 class Program:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
     
     @staticmethod
-    def mainTask():
+    def mainTask() -> None:
         os.system("clear")
         print (banner)
         print (barrier)
@@ -42,8 +42,10 @@ class Program:
                 Network.admin_finder()
             if option in ["port_scanner"]:
                 Network.port_scanner()
-            if option in ["dns-record"]:
+            if option in ["dns_record"]:
                 Network.dns_record()
+            if option in ["who_is"]:
+                Network.who_is()
             if option in ["ddos_all_requests"]:
                 Thread.all_requests()
             if option in ["ddos_basic"]:
@@ -52,6 +54,8 @@ class Program:
                 Thread.spam_post()
             if option in ["smtp_killer"]:
                 Thread.smtp_killer()
+            if option in ["bruteforce_website"]:
+                Thread.bruteforce_website()
         except Exception as err:
             raise err
         except KeyboardInterrupt as err:
@@ -61,21 +65,39 @@ class Program:
                 Program.exit()
         
         Program.start()
+    
     @staticmethod
-    def start():
+    def start() -> None:
+        if dict_config.get("useProxy"):
+            if not dict_config["useProxy"]:
+                log ("warning", "proxy is disabled")
+                if confirm ("turn on proxy"):
+                    with open("./config.json", "w") as file:
+                        dict_config["useProxy"] = True
+                        file.write(json_encode(dict_config, indent=2))
+                        file.close()
+        else:
+            log ("warning", "proxy is disabled")
+            if confirm ("turn on proxy"):
+                    with open("./config.json", "w") as file:
+                        dict_config["useProxy"] = True
+                        file.write(json_encode(dict_config, indent=2))
+                        file.close()
+        
         Program.mainTask()
         try:
             pass
         except KeyboardInterrupt as err:
             Program.exit()
         except Exception as err:
+            raise err
             log("error", str(err))
-            time.sleep(2)
-            time.sleep(0.01 * len(str(err)))
+            # time.sleep(2)
+            # time.sleep(0.01 * len(str(err)))
             Program.start()
     
     @staticmethod
-    def exit():
+    def exit() -> None:
         if confirm ("are you sure to exit program ?"):
             log("info", "sayonara")
             exit()
@@ -83,7 +105,7 @@ class Program:
             Program.start()
     
     @staticmethod
-    def soon():
+    def soon() -> None:
         log("info", "comming soon ..")
         time.sleep(1)
         Program.start()

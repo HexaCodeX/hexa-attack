@@ -3,7 +3,7 @@ from src.constants.config import config
 from src.constants.icons import icons
 from src.utils.colors import gray, white, green, purple
 
-def question (text, transform = str):
+def question (text: str, transform = str) -> str:
     _input_ = input(f"[{ green }?{ white }]: {text}: ")
     
     try:
@@ -17,7 +17,7 @@ def question (text, transform = str):
         
     return _input_
 
-def confirm (text):
+def confirm (text: str) -> bool:
     # skip confirm on development
     if config.environment in ["local", "development"]:
         return True
@@ -30,7 +30,7 @@ def confirm (text):
     else:
         return confirm(text)
 
-def log (key, text):
+def log (key: str, text: str) -> None:
     icon_keys = list(icons.keys())
     if not key in icon_keys:
         raise Exception("danger", f"icon with label '{key}' is doesn't exists !")

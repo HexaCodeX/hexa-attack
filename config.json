@@ -1,7 +1,8 @@
 {
   "name": "hexa-attack",
   "author": "HexaCodeX",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "workers": 50,
-  "environment": "production"
+  "environment": "production",
+  "useProxy": true
 }
