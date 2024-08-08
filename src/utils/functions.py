@@ -28,8 +28,11 @@ def xhr (method: str, url: str, headers: dict = {}, data = None, proxies = None,
     response = None
     proxies = proxies if dict_config["useProxy"] else None
     headers = {
-      **headers,
-      "user-agent": random_user_agent(),
+        **headers,
+        "user-agent": random_user_agent(),
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "expires": "0",
     }
     try:
         response = func(url, headers=headers, data=data, params=params, proxies=proxies, json=json, files=files, timeout=timeout)
@@ -41,7 +44,7 @@ def xhr (method: str, url: str, headers: dict = {}, data = None, proxies = None,
             return response
         
     except Exception as err:
-        log("error", f"| { chalk.green(str(err)) } | [{ chalk.yellow(method.upper()) }] | { meta_URL.hostname } |")
+        log("error", f"| { chalk.green('timeout') } | [{ chalk.yellow(method.upper()) }] | { chalk.cyan(meta_URL.hostname) } |")
         if mode == "return":
             return False
 

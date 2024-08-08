@@ -29,15 +29,34 @@ class Network:
     
     @staticmethod
     def update_proxies () -> None:
-        url = "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
+        providers = [
+            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
+            "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
+            "https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt",
+            "https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/http/data.txt",
+            "https://raw.githubusercontent.com/prxchk/proxy-list/main/http.txt",
+            "https://raw.githubusercontent.com/Anonym0usWork1221/Free-Proxies/main/proxy_files/http_proxies.txt",
+            "https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/http.txt",
+            "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all",
+            "https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt"
+        ]
+
         start = perf_counter()
         
         log("info", "getting proxies ...")
-        content = requests.get(url).text
-        
-        with open(f"{ PATH_PROGRAM }/proxies.txt", "w") as file:
-            file.write(content)
-            file.close()
+        content = ""
+
+        def runner (provider):
+            try:
+                log("info", f"fetching { provider } ...")
+                content = requests.get(provider).text
+                with open(f"{ PATH_PROGRAM }/proxies.txt", "a") as file:
+                    file.write(content)
+                    file.close()
+            except:
+                log("error", f"provider { provider } is can't be reached!")
+        with ThreadPoolExecutor(max_workers=config.workers) as executor:
+            executor.map(runner, providers)
         
         stop = perf_counter()
         log("info", f"done in { math.floor(stop - start) }s")

