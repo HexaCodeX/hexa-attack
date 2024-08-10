@@ -5,8 +5,7 @@
 ![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/HexaCodeX/hexa-attack)
 
 # Hexa Attack
-an open source tool for carrying out DDOS and also provides several additional features that are useful for identifying a website
-
+is an open source tool for performing DDOS simulations and also provides some additional features that are useful for penetration testingis an open source tool for performing DDOS simulations and also provides some additional features that are useful for penetration testing.
 ## installation
 
 ```shell
